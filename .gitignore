@@ -4,6 +4,7 @@
 # Production
 /build
 /dist
+/images
 
 # Logs
 npm-debug.log*
