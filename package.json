@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install-extension": "node scripts/install.js",
-    "start": "node lib/index.js"
+    "start": "node lib/index.js",
+    "mcp-server": "node lib/mcp-server.js"
   },
   "bin": {
     "gemini-video-ext": "lib/index.js"
@@ -24,6 +25,7 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@google/generative-ai": "^0.24.1",
+    "@modelcontextprotocol/sdk": "^0.6.1",
     "express": "^5.1.0",
     "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.3",

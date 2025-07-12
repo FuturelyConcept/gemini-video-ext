@@ -29,16 +29,21 @@ npm start
 
 ### Usage in Gemini CLI
 
-```bash
-# In Gemini CLI, type:
-/video
+Instead of a direct `/video` command, the extension works as an **MCP tool** that Gemini can automatically invoke:
 
-# This will:
-# 1. Open browser recording interface
-# 2. Record screen + microphone (max 30 seconds) 
-# 3. Extract frames and transcribe audio
-# 4. Generate structured context for Gemini
-# 5. Automatically include in your next prompt
+```bash
+# In Gemini CLI, ask naturally:
+"Can you record a video of this login issue?"
+"Record my screen while I show you the bug"
+"Let me record a demo of the problem"
+
+# Gemini will automatically:
+# 1. Invoke the video recording tool
+# 2. Open browser recording interface  
+# 3. Record screen + microphone (max 30 seconds)
+# 4. Extract frames and transcribe audio
+# 5. Generate structured context
+# 6. Use the context to help with your issue
 ```
 
 ## 📊 Current Status: ✅ WORKING
@@ -102,9 +107,26 @@ npm install
 # Set environment variables
 export GEMINI_API_KEY="your-api-key"
 
-# Test the extension
-node lib/index.js
-# Navigate to http://localhost:3000
+# Install as Gemini CLI extension
+npm run install-extension
+
+# The extension is now available in Gemini CLI
+# Test the standalone server (optional)
+node lib/index.js  # Navigate to http://localhost:3000
+```
+
+### Gemini CLI Integration
+
+```bash
+# Install the extension to Gemini CLI
+npm run install-extension
+
+# The extension will be installed to:
+# - Workspace: ./.gemini/extensions/gemini-video-ext/
+# - OR Home: ~/.gemini/extensions/gemini-video-ext/
+
+# Restart Gemini CLI to load the extension
+# The extension will appear as an available MCP tool
 ```
 
 ### Windows/WSL Setup
