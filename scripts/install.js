@@ -124,7 +124,7 @@ class ExtensionInstaller {
             'package.json',
             'gemini-extension.json',
             'lib/index.js',
-            'lib/mcp-server.js',
+            'scripts/video-record.js',
             'context/extension-context.md'
         ];
         

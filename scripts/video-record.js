@@ -33,8 +33,8 @@ class VideoRecordingCommand {
         try {
             // Start the video capture process
             console.log('🚀 Launching recording interface...');
-            console.log('📱 Browser will open automatically at http://localhost:3000');
-            console.log('🔔 If browser doesn\'t open, manually visit: http://localhost:3000');
+            console.log('📱 Browser will open and recording will start automatically');
+            console.log('🔔 If browser doesn\'t open, manually visit: http://localhost:8765?autostart=true');
             
             // Give a moment for the server to start, then force open browser
             setTimeout(() => {
@@ -73,21 +73,52 @@ class VideoRecordingCommand {
     }
 
     forceOpenBrowser() {
-        const url = 'http://localhost:3000';
+        const url = 'http://localhost:8765?autostart=true';
         const platform = process.platform;
-        let command;
+        
+        // Try multiple methods for better compatibility
+        const commands = this.getBrowserCommands(url, platform);
+        
+        this.tryOpenBrowser(commands, 0);
+    }
 
+    getBrowserCommands(url, platform) {
+        const commands = [];
+        
         if (platform === 'darwin') {
-            command = `open "${url}"`;
+            commands.push(`open "${url}"`);
         } else if (platform === 'win32') {
-            command = `start "" "${url}"`;
+            commands.push(`start "" "${url}"`);
+            commands.push(`cmd /c start "${url}"`);
         } else {
-            command = `xdg-open "${url}"`;
+            // Linux/WSL - try multiple methods
+            commands.push(`xdg-open "${url}"`);
+            commands.push(`sensible-browser "${url}"`);
+            commands.push(`firefox "${url}"`);
+            commands.push(`google-chrome "${url}"`);
+            commands.push(`chromium-browser "${url}"`);
+            
+            // WSL-specific: try Windows commands if in WSL
+            if (process.env.WSL_DISTRO_NAME || process.env.WSLENV) {
+                commands.unshift(`cmd.exe /c start "${url}"`);
+                commands.unshift(`powershell.exe -c "Start-Process '${url}'"`);
+            }
+        }
+        
+        return commands;
+    }
+
+    tryOpenBrowser(commands, index) {
+        if (index >= commands.length) {
+            console.log('⚠️  Could not auto-open browser. Please visit: http://localhost:8765?autostart=true');
+            return;
         }
 
+        const command = commands[index];
         exec(command, (error) => {
             if (error) {
-                console.log('⚠️  Could not auto-open browser. Please visit: http://localhost:3000');
+                // Try next command
+                this.tryOpenBrowser(commands, index + 1);
             } else {
                 console.log('🌐 Browser opened successfully');
             }

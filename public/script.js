@@ -10,6 +10,15 @@ let mediaRecorder;
 let recordedChunks = [];
 let stream;
 
+// Auto-start if URL parameter is present
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('autostart') === 'true') {
+    // Auto-start recording after a brief delay
+    setTimeout(() => {
+        startRecording();
+    }, 1000);
+}
+
 // --- Main Functions ---
 
 async function startRecording() {
