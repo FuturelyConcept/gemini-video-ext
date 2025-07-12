@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install-extension": "node scripts/install.js",
+    "start": "node lib/index.js"
+  },
+  "bin": {
+    "gemini-video-ext": "lib/index.js"
   },
   "keywords": [],
   "author": "",
