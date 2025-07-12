@@ -1,0 +1,23 @@
+{
+  "name": "gemini-video-ext",
+  "version": "1.0.0",
+  "description": "Privacy-first video recording for Gemini CLI",
+  "main": "lib/index.js",
+  "permissions": [
+    "screen-capture",
+    "audio-recording",
+    "local-file-system"
+  ],
+  "commands": {
+    "video": {
+      "description": "Record screen video with audio for context",
+      "action": "startVideoCapture"
+    }
+  },
+  "contextFileName": "context/extension-context.md",
+  "privacy": {
+    "dataRetention": "none",
+    "cloudSync": false,
+    "analytics": false
+  }
+}

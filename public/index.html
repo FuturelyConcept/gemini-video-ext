@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Video Recorder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Video Recorder</h1>
+        <p>Record a short video (max 30 seconds) to explain your issue or enhancement.</p>
+        <div class="video-container">
+            <video id="videoPreview" autoplay muted></video>
+        </div>
+        <div class="controls">
+            <label for="audioToggle">Include Audio:</label>
+            <input type="checkbox" id="audioToggle" checked>
+            <button id="startBtn">Start Recording</button>
+            <button id="stopBtn" disabled>Stop Recording</button>
+        </div>
+        <div id="status"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
