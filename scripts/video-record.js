@@ -24,18 +24,7 @@ class VideoRecordingCommand {
     }
 
     async execute() {
-        console.log('🎥 Starting Gemini CLI Video Recording...');
-        console.log('📺 A browser window will open for screen recording');
-        console.log('⏱️ Record your issue (max 30 seconds)');
-        console.log('🔒 All processing happens locally on your machine');
-        console.log('');
-
         try {
-            // Start the video capture process
-            console.log('🚀 Launching recording interface...');
-            console.log('📱 Browser will open and recording will start automatically');
-            console.log('🔔 If browser doesn\'t open, manually visit: http://localhost:8765?autostart=true');
-            
             // Give a moment for the server to start, then force open browser
             setTimeout(() => {
                 this.forceOpenBrowser();
@@ -43,19 +32,11 @@ class VideoRecordingCommand {
             
             const context = await startVideoCapture();
             
-            // Output the context for Gemini CLI to include
-            console.log('\n✅ Video recording completed successfully!');
-            console.log(`📊 Generated context: ${Math.floor(context.length / 1024)}KB with ${(context.match(/Base64 Image Data/g) || []).length} frames`);
-            console.log('📋 Full context with images has been added to your conversation');
-            
             // Clean up temp files
             this.cleanup();
             
-            console.log('\n🧹 Temporary files cleaned up');
-            console.log('💬 Video context is ready for analysis');
-            
             // Output the actual context for Gemini CLI (without truncation)
-            console.log('\n' + context);
+            console.log(context);
             
             process.exit(0);
             
@@ -110,18 +91,17 @@ class VideoRecordingCommand {
 
     tryOpenBrowser(commands, index) {
         if (index >= commands.length) {
-            console.log('⚠️  Could not auto-open browser. Please visit: http://localhost:8765?autostart=true');
+            // Silent fallback - user can manually visit URL if needed
             return;
         }
 
         const command = commands[index];
         exec(command, (error) => {
             if (error) {
-                // Try next command
+                // Try next command silently
                 this.tryOpenBrowser(commands, index + 1);
-            } else {
-                console.log('🌐 Browser opened successfully');
             }
+            // Success is silent too
         });
     }
 
