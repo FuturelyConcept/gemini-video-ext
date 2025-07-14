@@ -1,22 +1,44 @@
-const startBtn = document.getElementById('startBtn');
-const stopBtn = document.getElementById('stopBtn');
 const videoPreview = document.getElementById('videoPreview');
 const statusDiv = document.getElementById('status');
 const audioToggle = document.getElementById('audioToggle');
-const testMicBtn = document.getElementById('testMicBtn');
 const micStatus = document.getElementById('micStatus');
 
 let mediaRecorder;
 let recordedChunks = [];
 let stream;
+let recordingStartTime;
+let timerInterval;
 
 // Auto-start if URL parameter is present
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('autostart') === 'true') {
-    // Auto-start recording after a brief delay
+    // Show recording interface and auto-start
+    showRecordingInterface();
     setTimeout(() => {
         startRecording();
     }, 1000);
+}
+
+function showRecordingInterface() {
+    document.getElementById('main-content').querySelector('.popup-message').style.display = 'none';
+    document.getElementById('recording-status').style.display = 'block';
+}
+
+function updateTimer() {
+    if (recordingStartTime) {
+        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        const timerDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        const timerElement = document.getElementById('timer');
+        if (timerElement) {
+            timerElement.textContent = timerDisplay;
+        }
+        
+        // Update page title with timer
+        document.title = `Recording ${timerDisplay} - Gemini Video Recorder`;
+    }
 }
 
 // --- Main Functions ---
@@ -112,6 +134,11 @@ async function startRecording() {
 
         mediaRecorder.start();
         
+        // Start timer
+        recordingStartTime = Date.now();
+        timerInterval = setInterval(updateTimer, 1000);
+        updateTimer(); // Initial update
+        
         // Automatically stop recording after 30 seconds
         setTimeout(() => {
             if (mediaRecorder && mediaRecorder.state === 'recording') {
@@ -130,6 +157,14 @@ function stopRecording() {
     if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
     }
+    
+    // Clear timer
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    recordingStartTime = null;
+    document.title = 'Gemini Video Recorder';
 }
 
 function uploadVideo(blob) {
@@ -161,13 +196,9 @@ function uploadVideo(blob) {
 
 function updateUIForRecording(isRecording) {
     if (isRecording) {
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-        statusDiv.textContent = 'Recording...';
+        statusDiv.textContent = 'Recording in progress...';
     } else {
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-        statusDiv.textContent = 'Stopped. Waiting for processing...';
+        statusDiv.textContent = 'Recording stopped. Processing...';
     }
 }
 
@@ -198,61 +229,6 @@ function monitorAudioLevel(stream) {
     setTimeout(checkAudioLevel, 1000); // Start checking after 1 second
 }
 
-async function testMicrophone() {
-    try {
-        micStatus.textContent = 'Testing microphone access...';
-        
-        // List available audio devices first
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioInputs = devices.filter(device => device.kind === 'audioinput');
-        console.log('Available audio input devices:', audioInputs);
-        
-        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
-        // Test actual microphone audio levels
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const analyser = audioContext.createAnalyser();
-        const microphone = audioContext.createMediaStreamSource(micStream);
-        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+// testMicrophone function removed - no longer needed without test button
 
-        microphone.connect(analyser);
-        analyser.fftSize = 256;
-
-        let maxLevel = 0;
-        let testCount = 0;
-        
-        function checkLevel() {
-            analyser.getByteFrequencyData(dataArray);
-            const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-            maxLevel = Math.max(maxLevel, average);
-            testCount++;
-            
-            if (testCount < 30) { // Test for 3 seconds
-                setTimeout(checkLevel, 100);
-            } else {
-                micStream.getTracks().forEach(track => track.stop());
-                audioContext.close();
-                
-                if (maxLevel > 5) {
-                    micStatus.textContent = `✅ Microphone working! Max level: ${maxLevel.toFixed(1)}`;
-                    micStatus.style.color = 'green';
-                } else {
-                    micStatus.textContent = `❌ Microphone silent. Max level: ${maxLevel.toFixed(1)}`;
-                    micStatus.style.color = 'red';
-                }
-            }
-        }
-        
-        micStatus.textContent = '🎤 Speak now to test microphone (3 seconds)...';
-        micStatus.style.color = 'blue';
-        setTimeout(checkLevel, 100);
-        
-    } catch (error) {
-        micStatus.textContent = `❌ Microphone access denied: ${error.message}`;
-        micStatus.style.color = 'red';
-    }
-}
-
-startBtn.addEventListener('click', startRecording);
-stopBtn.addEventListener('click', stopRecording);
-testMicBtn.addEventListener('click', testMicrophone);
+// Event listeners removed - recording is controlled automatically by popup

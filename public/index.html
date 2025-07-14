@@ -9,19 +9,25 @@
 <body>
     <div class="container">
         <h1>Video Recorder</h1>
-        <p>Record a short video (max 30 seconds) to explain your issue or enhancement.</p>
-        <div class="video-container">
-            <video id="videoPreview" autoplay muted></video>
+        <div id="main-content">
+            <div class="popup-message">
+                <h2>📹 Use the popup to start recording</h2>
+                <p>The recording popup will open automatically when you use the <code>/video</code> command from Gemini CLI.</p>
+                <p>You can also manually test the recording by opening: <a href="?autostart=true" target="_blank">http://localhost:8765?autostart=true</a></p>
+            </div>
+            <div id="recording-status" style="display: none;">
+                <div class="timer-display" style="text-align: center; margin-bottom: 15px;">
+                    <span id="timer" style="font-size: 24px; font-weight: bold; color: #e74c3c;">00:00</span>
+                    <span style="font-size: 14px; color: #666; margin-left: 10px;">/ 30 seconds max</span>
+                </div>
+                <div class="video-container">
+                    <video id="videoPreview" autoplay muted></video>
+                </div>
+                <div id="status" style="margin-top: 15px; font-size: 16px; color: #333;"></div>
+                <input type="checkbox" id="audioToggle" checked style="display: none;">
+                <div id="micStatus" style="margin-top: 10px; font-size: 14px;"></div>
+            </div>
         </div>
-        <div class="controls">
-            <label for="audioToggle">Include Audio:</label>
-            <input type="checkbox" id="audioToggle" checked>
-            <button id="startBtn">Start Recording</button>
-            <button id="stopBtn" disabled>Stop Recording</button>
-            <button id="testMicBtn" style="background: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 3px; margin-left: 10px;">Test Microphone</button>
-        </div>
-        <div id="micStatus" style="margin-top: 10px; font-size: 14px;"></div>
-        <div id="status"></div>
     </div>
     <script src="script.js"></script>
 </body>
