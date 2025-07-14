@@ -184,7 +184,12 @@ function uploadVideo(blob) {
     })
     .then(data => {
         console.log('Upload successful:', data);
-        statusDiv.textContent = 'Processing complete! You can close this window.';
+        statusDiv.textContent = 'Processing complete! Closing window...';
+        
+        // Close the window after a brief delay to show completion message
+        setTimeout(() => {
+            window.close();
+        }, 2000);
     })
     .catch(err => {
         console.error('Error uploading video:', err);
